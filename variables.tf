@@ -1,6 +1,11 @@
 # variables.tf
 # This file defines the input variables for the Terraform configuration.
 
+variable "backend_state_bucket" {
+  description = "The GCS bucket name where the backend management repo's Terraform state is stored."
+  type        = string
+}
+
 variable "gcp_project_id" {
   description = "The GCP project ID."
   type        = string
@@ -56,9 +61,4 @@ variable "temporal_ui_version" {
   description = "The Docker image version for temporalio/ui."
   type        = string
   default     = "2.25.0" # Check for the latest stable version
-}
-
-variable "backend_state_bucket" {
-  description = "The GCS bucket name where the backend management repo's Terraform state is stored."
-  type        = string
 }

@@ -7,6 +7,7 @@
 # -----------------------------------------------------------------------------
 data "terraform_remote_state" "shared_backend_config" {
   backend = "gcs"
+
   config = {
     bucket = var.backend_state_bucket
     prefix = "temporal"

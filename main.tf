@@ -28,7 +28,7 @@ provider "infisical" {
 # Neon Provider Configuration
 # -----------------------------------------------------------------------------
 provider "neon" {
-  api_key = ephemeral.infisical_secret.neon_api_key.value
+  api_key = data.infisical_secret.neon_api_key.secret_value
 }
 
 # -----------------------------------------------------------------------------
@@ -64,7 +64,7 @@ resource "google_project_iam_member" "artifact_registry_reader" {
 #   name                    = "temporal-vpc-network"
 #   project                 = var.gcp_project_id
 #   auto_create_subnetworks = true # For simplicity, auto-create subnets
-}
+# }
 
 # resource "google_compute_network_peering" "neon_peering" {
 #   name                 = "neon-vpc-peering"
@@ -72,7 +72,7 @@ resource "google_project_iam_member" "artifact_registry_reader" {
 #   peer_network         = var.neon_vpc_peering_network_id # Provided by Neon for VPC peering
 #   import_custom_routes = true
 #   export_custom_routes = true
-}
+# }
 
 
 # resource "google_vpc_access_connector" "temporal_connector" {
@@ -81,7 +81,7 @@ resource "google_project_iam_member" "artifact_registry_reader" {
 #   ip_cidr_range = "10.8.0.0/28" # Small CIDR range for connector
 #   network       = google_compute_network.vpc_network.name
 #   project       = var.gcp_project_id
-}
+# }
 
 # -----------------------------------------------------------------------------
 # Neon.tech PostgreSQL Database
@@ -105,7 +105,7 @@ resource "neon_role" "temporal_db_user" {
   project_id = neon_project.temporal_db_project.id
   branch_id  = neon_branch.temporal_db_branch.id
   name       = "temporal"
-  password   = ephemeral.infisical_secret.db_password.value # Fetch password from Infisical
+  password   = data.infisical_secret.db_password.secret_value # Fetch password from Infisical
 }
 
 # -----------------------------------------------------------------------------
@@ -140,7 +140,7 @@ resource "google_cloud_run_v2_service" "temporal_server" {
       }
       env {
         name  = "POSTGRES_PWD"
-        value = ephemeral.infisical_secret.db_password.value
+        value = data.infisical_secret.db_password.secret_value
       }
       env {
         name  = "POSTGRES_SEEDS"

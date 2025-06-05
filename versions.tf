@@ -1,6 +1,6 @@
 terraform {
   backend "gcs" {
-    bucket = var.backend_state_bucket
+    bucket = "terraform-state-dev-e8e61720"
     prefix = "terraform/state"
   }
 
@@ -11,11 +11,11 @@ terraform {
     }
     infisical = {
       source  = "infisical/infisical"
-      version = "~> 1.0" # Check the latest version on Terraform Registry
+      version = "0.15.12"
     }
     neon = {
-      source  = "neondatabase/neon"
-      version = "~> 0.1" # Check the latest version on Terraform Registry
+      source  = "terraform-community-providers/neon"
+      version = "0.1.8"
     }
   }
   required_version = ">= 1.0"
