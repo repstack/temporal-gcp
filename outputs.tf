@@ -16,14 +16,9 @@ output "temporal_server_service_account_email" {
   value       = google_service_account.cloud_run_sa.email
 }
 
-output "neon_database_connection_string" {
-  description = "The connection string for the Neon PostgreSQL database."
-  # Note: This output exposes sensitive info. Use with caution or remove in production.
-  value     = neon_role.temporal_db_user.connection_uri
-  sensitive = true
-}
-
-output "vpc_connector_name" {
-  description = "The name of the Serverless VPC Access Connector."
-  value       = google_vpc_access_connector.temporal_connector.name
-}
+# output "neon_database_connection_string" {
+#   description = "The connection string for the Neon PostgreSQL database."
+#   # Note: This output exposes sensitive info. Use with caution or remove in production.
+#   value     = neon_role.temporal_db_user.connection_uri
+#   sensitive = true
+# }

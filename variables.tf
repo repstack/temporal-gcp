@@ -45,11 +45,11 @@ variable "infisical_environment_slug" {
   type        = string
 }
 
-variable "neon_vpc_peering_network_id" {
-  description = "The network ID provided by Neon for VPC peering. Obtain this from your Neon account for private connectivity."
-  type        = string
-  # No default, this is crucial for private connectivity with Neon
-}
+# variable "neon_vpc_peering_network_id" {
+#   description = "The network ID provided by Neon for VPC peering. Obtain this from your Neon account for private connectivity."
+#   type        = string
+#   # No default, this is crucial for private connectivity with Neon
+# }
 
 variable "temporal_version" {
   description = "The Docker image version for temporalio/auto-setup."

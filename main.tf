@@ -16,8 +16,8 @@ provider "google" {
 provider "infisical" {
   host = var.infisical_host_address
 
-  auth {
-    universal {
+  auth = {
+    universal = {
       client_id     = var.infisical_client_id
       client_secret = var.infisical_client_secret
     }
@@ -28,7 +28,7 @@ provider "infisical" {
 # Neon Provider Configuration
 # -----------------------------------------------------------------------------
 provider "neon" {
-  api_key = data.infisical_secret.neon_api_key.secret_value
+  token = data.infisical_secrets.neon_secrets.secrets["NEON_PRODUCTION_API_KEY"].value
 }
 
 # -----------------------------------------------------------------------------
@@ -87,7 +87,8 @@ resource "google_project_iam_member" "artifact_registry_reader" {
 # Neon.tech PostgreSQL Database
 # -----------------------------------------------------------------------------
 resource "neon_project" "temporal_db_project" {
-  name = "temporal-project"
+  name      = "temporal"
+  region_id = "aws-eu-west-2"
 }
 
 resource "neon_branch" "temporal_db_branch" {
@@ -98,14 +99,14 @@ resource "neon_branch" "temporal_db_branch" {
 resource "neon_database" "temporal_database" {
   project_id = neon_project.temporal_db_project.id
   branch_id  = neon_branch.temporal_db_branch.id
-  name       = "temporal"
+  name       = "temporal-production"
+  owner_name = "temporal"
 }
 
 resource "neon_role" "temporal_db_user" {
   project_id = neon_project.temporal_db_project.id
   branch_id  = neon_branch.temporal_db_branch.id
   name       = "temporal"
-  password   = data.infisical_secret.db_password.secret_value # Fetch password from Infisical
 }
 
 # -----------------------------------------------------------------------------
@@ -140,12 +141,12 @@ resource "google_cloud_run_v2_service" "temporal_server" {
       }
       env {
         name  = "POSTGRES_PWD"
-        value = data.infisical_secret.db_password.secret_value
+        value = data.infisical_secrets.temporal_secrets.secrets["NEON_TEMPORAL_PRODUCTION_DB_PASSWORD"].value
       }
-      env {
-        name  = "POSTGRES_SEEDS"
-        value = neon_branch.temporal_db_branch.connection_uri_params["host"] # Use Neon host
-      }
+      # env {
+      #   name  = "POSTGRES_SEEDS"
+      #   value = neon_branch.temporal_db_branch.connection_uri_params["host"] # Use Neon host
+      # }
       env {
         name  = "DYNAMIC_CONFIG_FILE_PATH"
         value = "config/dynamicconfig/development-sql.yaml" # Assuming default path
@@ -169,10 +170,10 @@ resource "google_cloud_run_v2_service" "temporal_server" {
       min_instance_count = 1 # CRITICAL: Keep at least one instance running
       max_instance_count = 2 # Adjust based on expected load
     }
-    vpc_access {
-      connector = google_vpc_access_connector.temporal_connector.id
-      egress    = "ALL_TRAFFIC" # Ensure egress to VPC for DB connection
-    }
+    # vpc_access {
+    #   connector = google_vpc_access_connector.temporal_connector.id
+    #   egress    = "ALL_TRAFFIC" # Ensure egress to VPC for DB connection
+    # }
   }
 
   traffic {

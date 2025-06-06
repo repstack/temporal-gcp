@@ -4,23 +4,27 @@
 # -----------------------------------------------------------------------------
 # Neon Configuration Secrets
 # -----------------------------------------------------------------------------
-data "infisical_secret" "neon_api_key" {
+data "infisical_secrets" "neon_secrets" {
   env_slug     = var.infisical_environment_slug
   workspace_id = var.infisical_project_id
-  secret_name  = "NEON_API_KEY"
+  folder_path  = "/"
 }
 
 # -----------------------------------------------------------------------------
 # Temporal Database Secrets
 # -----------------------------------------------------------------------------
-data "infisical_secret" "db_password" {
+data "infisical_secrets" "temporal_secrets" {
   env_slug     = var.infisical_environment_slug
   workspace_id = var.infisical_project_id
-  secret_name  = "NEON_TEMPORAL_PRODUCTION_DB_PASSWORD"
+  folder_path  = "/"
 }
 
-data "infisical_secret" "temporal_admin_password" {
-  env_slug     = var.infisical_environment_slug
-  workspace_id = var.infisical_project_id
-  secret_name  = "TEMPORAL_PRODUCTION_ADMIN_PASSWORD"
+output "db_password" {
+  value = data.infisical_secrets.temporal_secrets.secrets["NEON_TEMPORAL_PRODUCTION_DB_PASSWORD"].value
 }
+
+output "temporal_admin_password" {
+  value = data.infisical_secrets.temporal_secrets.secrets["TEMPORAL_PRODUCTION_ADMIN_PASSWORD"].value
+}
+
+
