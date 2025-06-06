@@ -19,12 +19,3 @@ data "infisical_secrets" "temporal_secrets" {
   folder_path  = "/"
 }
 
-output "db_password" {
-  value = data.infisical_secrets.temporal_secrets.secrets["NEON_TEMPORAL_PRODUCTION_DB_PASSWORD"].value
-}
-
-output "temporal_admin_password" {
-  value = data.infisical_secrets.temporal_secrets.secrets["TEMPORAL_PRODUCTION_ADMIN_PASSWORD"].value
-}
-
-
