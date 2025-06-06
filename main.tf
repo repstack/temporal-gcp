@@ -28,7 +28,7 @@ provider "infisical" {
 # Neon Provider Configuration
 # -----------------------------------------------------------------------------
 provider "neon" {
-  token = data.infisical_secrets.neon_secrets.secrets["NEON_PRODUCTION_API_KEY"].value
+  token = data.infisical_secrets.neon_secrets.secrets["NEON_ORG_API_KEY"].value
 }
 
 # -----------------------------------------------------------------------------
@@ -86,6 +86,8 @@ resource "google_project_iam_member" "artifact_registry_reader" {
 # -----------------------------------------------------------------------------
 # Neon.tech PostgreSQL Database
 # -----------------------------------------------------------------------------
+
+
 resource "neon_project" "temporal_db_project" {
   name      = "temporal"
   region_id = "aws-eu-west-2"
